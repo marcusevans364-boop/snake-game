@@ -3,190 +3,108 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>snake retro king</title>
+  <title>Retro Arcade</title>
   <style>
-    body {
-      background: #738;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
+    :root {
+      --bg: #1d1d2b;
+      --panel: #2a2a3d;
+      --accent: #7ef9a9;
+      --accent-2: #7ed8ff;
+      --text: #f3f4f6;
+      --shadow: rgba(0,0,0,0.25);
     }
-    canvas {
-      width: min(1000px, 100vw);
-      height: auto;
-      border: 2px solid white;
-      box-sizing: border-box;
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #2c2b4d, var(--bg));
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    .menu {
+      width: min(920px, 90vw);
+      padding: 32px;
+      background: rgba(20, 20, 34, 0.75);
+      border: 2px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      box-shadow: 0 18px 48px var(--shadow);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin: 0 0 28px;
+      color: #d8d8e8;
+      font-size: 1.05rem;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      display: block;
+      padding: 24px 18px;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, rgba(126, 249, 169, 0.12), rgba(126, 216, 255, 0.12));
+      color: var(--text);
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(126, 249, 169, 0.6);
+      box-shadow: 0 12px 24px rgba(126, 249, 169, 0.15);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: #dfe7ff;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-<canvas width="1000" height="560" id="game"></canvas>
-<script>
-var canvas = document.getElementById('game');
-var context = canvas.getContext('2d');
-var grid = 16;
-var count = 0;
-var gamepadDeadZone = 0.5;
+  <main class="menu">
+    <h1>Retro Arcade</h1>
+    <p class="subtitle">Choose a game to play.</p>
 
-var snake = {
-  x: 160,
-  y: 160,
-  dx: grid,
-  dy: 0,
-  cells: [],
-  maxCells: 4
-};
+    <div class="game-grid">
+      <a class="card" href="snake.html">
+        <h2>Snake</h2>
+        <p>Classic arcade survival. Eat fruit, grow longer, and avoid crashing.</p>
+      </a>
 
-var apple = {
-  x: 320,
-  y: 320
-};
+      <a class="card" href="pong.html">
+        <h2>Pong</h2>
+        <p>Fast table-tennis action against the computer.</p>
+      </a>
 
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function setDirection(nextDx, nextDy) {
-  if (nextDx !== 0 && snake.dx !== -nextDx) {
-    snake.dx = nextDx;
-    snake.dy = 0;
-  } else if (nextDy !== 0 && snake.dy !== -nextDy) {
-    snake.dx = 0;
-    snake.dy = nextDy;
-  }
-}
-
-function getGamepadDirection(gamepad) {
-  var buttons = gamepad.buttons || [];
-  var directions = [
-    [12, 0, -grid], // D-pad up
-    [13, 0, grid],  // D-pad down
-    [14, -grid, 0], // D-pad left
-    [15, grid, 0]   // D-pad right
-  ];
-
-  // Standard-mapped controllers expose the D-pad at buttons 12-15.
-  for (var i = 0; i < directions.length; i++) {
-    var button = buttons[directions[i][0]];
-    if (button && button.pressed) {
-      return { dx: directions[i][1], dy: directions[i][2] };
-    }
-  }
-
-  // Check axis pairs so controllers that expose the stick on a later pair
-  // work too. Each pair is interpreted as horizontal then vertical.
-  var axes = gamepad.axes || [];
-  for (var axis = 0; axis + 1 < axes.length; axis += 2) {
-    var stickX = axes[axis] || 0;
-    var stickY = axes[axis + 1] || 0;
-    if (Math.abs(stickX) > gamepadDeadZone || Math.abs(stickY) > gamepadDeadZone) {
-      if (Math.abs(stickX) > Math.abs(stickY)) {
-        return { dx: stickX > 0 ? grid : -grid, dy: 0 };
-      }
-      return { dx: 0, dy: stickY < 0 ? -grid : grid };
-    }
-  }
-
-  return null;
-}
-
-function updateGamepadDirection() {
-  if (!navigator.getGamepads) {
-    return;
-  }
-
-  var gamepads = navigator.getGamepads();
-  if (!gamepads) {
-    return;
-  }
-
-  // Poll all connected controllers; the first one providing a direction wins.
-  for (var i = 0; i < gamepads.length; i++) {
-    var gamepad = gamepads[i];
-    if (!gamepad || !gamepad.connected) {
-      continue;
-    }
-
-    var direction = getGamepadDirection(gamepad);
-    if (direction) {
-      setDirection(direction.dx, direction.dy);
-      return;
-    }
-  }
-}
-
-function loop() {
-  requestAnimationFrame(loop);
-
-  updateGamepadDirection();
-
-  if (++count < 6) {
-    return;
-  }
-  count = 0;
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-  snake.x += snake.dx;
-  snake.y += snake.dy;
-
-  if (snake.x < 0) {
-    snake.x = canvas.width - grid;
-  } else if (snake.x >= canvas.width) {
-    snake.x = 0;
-  }
-  if (snake.y < 0) {
-    snake.y = canvas.height - grid;
-  } else if (snake.y >= canvas.height) {
-    snake.y = 0;
-  }
-
-  snake.cells.unshift({x: snake.x, y: snake.y});
-
-  if (snake.cells.length > snake.maxCells) {
-    snake.cells.pop();
-  }
-
-  context.fillStyle = 'red';
-  context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
-
-  context.fillStyle = 'lime';
-  snake.cells.forEach(function(cell, index) {
-    context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
-    if (cell.x === apple.x && cell.y === apple.y) {
-      snake.maxCells++;
-      apple.x = getRandomInt(0, Math.floor(canvas.width / grid)) * grid;
-      apple.y = getRandomInt(0, Math.floor(canvas.height / grid)) * grid;
-    }
-    for (var i = index + 1; i < snake.cells.length; i++) {
-      if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-        snake.x = 160;
-        snake.y = 160;
-        snake.cells = [];
-        snake.maxCells = 4;
-        snake.dx = grid;
-        snake.dy = 0;
-        apple.x = getRandomInt(0, Math.floor(canvas.width / grid)) * grid;
-        apple.y = getRandomInt(0, Math.floor(canvas.height / grid)) * grid;
-      }
-    }
-  });
-}
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'ArrowLeft' || e.which === 37) {
-    setDirection(-grid, 0);
-  } else if (e.key === 'ArrowUp' || e.which === 38) {
-    setDirection(0, -grid);
-  } else if (e.key === 'ArrowRight' || e.which === 39) {
-    setDirection(grid, 0);
-  } else if (e.key === 'ArrowDown' || e.which === 40) {
-    setDirection(0, grid);
-  }
-});
-
-requestAnimationFrame(loop);
-</script>
+      <a class="card" href="tictactoe.html">
+        <h2>Tic-Tac-Toe</h2>
+        <p>Simple strategy and quick rounds against an AI opponent.</p>
+      </a>
+    </div>
+  </main>
 </body>
 </html>

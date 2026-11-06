@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .board-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 120px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 8px;
+      background: #1e293b;
+      padding: 8px;
+      border-radius: 12px;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.35);
+    }
+
+    .cell {
+      display: grid;
+      place-items: center;
+      background: #334155;
+      border: none;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .cell:hover {
+      background: #475569;
+    }
+
+    .status {
+      min-height: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #e2e8f0;
+    }
+
+    button {
+      background: #7ef9a9;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="board-wrap">
+    <div id="board" aria-label="Tic Tac Toe board"></div>
+    <div id="status" class="status">Your turn</div>
+    <div>
+      <button id="reset">Reset Game</button>
+      <button id="back" onclick="location.href='index.html'">Back to arcade</button>
+    </div>
+  </div>
+
+  <script>
+    var boardEl = document.getElementById('board');
+    var statusEl = document.getElementById('status');
+    var resetBtn = document.getElementById('reset');
+
+    var board = Array(9).fill('');
+    var currentPlayer = 'X';
+    var gameOver = false;
+
+    function winningLines() {
+      return [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+    }
+
+    function checkWinner(b) {
+      for (var i = 0; i < winningLines().length; i++) {
+        var [a, bIndex, c] = winningLines()[i];
+        if (b[a] && b[a] === b[bIndex] && b[a] === b[c]) {
+          return b[a];
+        }
+      }
+      return null;
+    }
+
+    function isDraw(b) {
+      return b.every(function(cell) { return cell !== ''; });
+    }
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      board.forEach(function(cell, index) {
+        var button = document.createElement('button');
+        button.className = 'cell';
+        button.textContent = cell;
+        button.disabled = !!cell || gameOver;
+        button.setAttribute('aria-label', 'Cell ' + (index + 1));
+        button.addEventListener('click', function() {
+          if (board[index] || gameOver) return;
+          board[index] = 'X';
+          currentPlayer = 'O';
+          if (checkWinner(board)) {
+            finishGame('You win!');
+            return;
+          }
+          if (isDraw(board)) {
+            finishGame('Draw game!');
+            return;
+          }
+          statusEl.textContent = 'Computer is thinking...';
+          setTimeout(makeComputerMove, 250);
+          renderBoard();
+        });
+        boardEl.appendChild(button);
+      });
+    }
+
+    function finishGame(message) {
+      gameOver = true;
+      statusEl.textContent = message;
+      renderBoard();
+    }
+
+    function getAvailableMoves(b) {
+      return b.map(function(cell, index) { return cell === '' ? index : null; }).filter(function(v) { return v !== null; });
+    }
+
+    function minimax(b, player) {
+      var winner = checkWinner(b);
+      if (winner === 'X') return 10;
+      if (winner === 'O') return -10;
+      if (isDraw(b)) return 0;
+
+      var availableMoves = getAvailableMoves(b);
+      var bestScore = player === 'O' ? Infinity : -Infinity;
+
+      for (var i = 0; i < availableMoves.length; i++) {
+        var move = availableMoves[i];
+        b[move] = player;
+        var score = minimax(b, player === 'O' ? 'X' : 'O');
+        b[move] = '';
+
+        if (player === 'O') {
+          if (score < bestScore) bestScore = score;
+        } else {
+          if (score > bestScore) bestScore = score;
+        }
+      }
+
+      return bestScore;
+    }
+
+    function chooseBestMove() {
+      var availableMoves = getAvailableMoves(board);
+      var bestMove = null;
+      var bestScore = Infinity;
+
+      for (var i = 0; i < availableMoves.length; i++) {
+        var move = availableMoves[i];
+        board[move] = 'O';
+        var score = minimax(board, 'X');
+        board[move] = '';
+
+        if (score < bestScore) {
+          bestScore = score;
+          bestMove = move;
+        }
+      }
+
+      return bestMove;
+    }
+
+    function makeComputerMove() {
+      if (gameOver) return;
+      var move = chooseBestMove();
+      if (move === null || move === undefined) {
+        statusEl.textContent = 'Draw game!';
+        gameOver = true;
+        renderBoard();
+        return;
+      }
+
+      board[move] = 'O';
+      currentPlayer = 'X';
+      if (checkWinner(board)) {
+        finishGame('Computer wins!');
+        return;
+      }
+      if (isDraw(board)) {
+        finishGame('Draw game!');
+        return;
+      }
+      statusEl.textContent = 'Your turn';
+      renderBoard();
+    }
+
+    function resetGame() {
+      board = Array(9).fill('');
+      currentPlayer = 'X';
+      gameOver = false;
+      statusEl.textContent = 'Your turn';
+      renderBoard();
+    }
+
+    resetBtn.addEventListener('click', resetGame);
+    resetGame();
+  </script>
+</body>
+</html>

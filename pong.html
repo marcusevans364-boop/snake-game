@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pong</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #111827;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .panel {
+      text-align: center;
+    }
+
+    canvas {
+      display: block;
+      background: #0b1020;
+      border: 3px solid white;
+      border-radius: 8px;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.35);
+    }
+
+    .controls {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: #d1d5db;
+    }
+
+    a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <canvas id="game" width="800" height="500"></canvas>
+    <div class="controls">Player 1: W / S &nbsp;|&nbsp; <a href="index.html">Back to arcade</a></div>
+  </div>
+
+  <script>
+    var canvas = document.getElementById('game');
+    var ctx = canvas.getContext('2d');
+
+    var keys = {};
+    var player = { x: 20, y: canvas.height / 2 - 50, width: 12, height: 100, speed: 6 };
+    var ai = { x: canvas.width - 32, y: canvas.height / 2 - 50, width: 12, height: 100, speed: 5 };
+    var ball = { x: canvas.width / 2, y: canvas.height / 2, radius: 8, vx: 5, vy: 4 };
+    var score = { player: 0, ai: 0 };
+    var gameOver = false;
+
+    function resetBall(direction) {
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height / 2;
+      ball.vx = direction * (Math.random() * 1.5 + 4.5);
+      ball.vy = (Math.random() * 4 - 2);
+    }
+
+    function drawRect(x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+    }
+
+    function drawBall(x, y, r, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawCenterLine() {
+      ctx.strokeStyle = '#dfe7ff';
+      ctx.setLineDash([12, 10]);
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function drawScore() {
+      ctx.font = 'bold 42px Arial';
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.fillText(score.player, canvas.width / 2 - 70, 60);
+      ctx.fillText(score.ai, canvas.width / 2 + 70, 60);
+    }
+
+    function updatePlayer() {
+      if (keys['w'] || keys['W']) player.y -= player.speed;
+      if (keys['s'] || keys['S']) player.y += player.speed;
+      player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+    }
+
+    function updateAI() {
+      var targetY = ball.y - ai.height / 2;
+      if (ball.x > canvas.width / 2) {
+        if (ai.y < targetY) ai.y += ai.speed;
+        if (ai.y > targetY) ai.y -= ai.speed;
+      }
+      ai.y = Math.max(0, Math.min(canvas.height - ai.height, ai.y));
+    }
+
+    function updateBall() {
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      if (ball.y < ball.radius || ball.y > canvas.height - ball.radius) {
+        ball.vy *= -1;
+      }
+
+      var hitPlayer =
+        ball.x - ball.radius < player.x + player.width &&
+        ball.x + ball.radius > player.x &&
+        ball.y > player.y &&
+        ball.y < player.y + player.height;
+
+      var hitAI =
+        ball.x + ball.radius > ai.x &&
+        ball.x - ball.radius < ai.x + ai.width &&
+        ball.y > ai.y &&
+        ball.y < ai.y + ai.height;
+
+      if (hitPlayer) {
+        ball.x = player.x + player.width + ball.radius;
+        ball.vx = Math.abs(ball.vx) + 0.2;
+        ball.vy += (ball.y - (player.y + player.height / 2)) * 0.08;
+      }
+
+      if (hitAI) {
+        ball.x = ai.x - ball.radius;
+        ball.vx = -Math.abs(ball.vx) - 0.2;
+        ball.vy += (ball.y - (ai.y + ai.height / 2)) * 0.08;
+      }
+
+      if (ball.x < 0) {
+        score.ai += 1;
+        resetBall(1);
+      } else if (ball.x > canvas.width) {
+        score.player += 1;
+        resetBall(-1);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawCenterLine();
+      drawRect(player.x, player.y, player.width, player.height, '#7ef9a9');
+      drawRect(ai.x, ai.y, ai.width, ai.height, '#7ed8ff');
+      drawBall(ball.x, ball.y, ball.radius, '#f8fafc');
+      drawScore();
+    }
+
+    function loop() {
+      updatePlayer();
+      updateAI();
+      updateBall();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('keydown', function(e) {
+      keys[e.key] = true;
+    });
+
+    window.addEventListener('keyup', function(e) {
+      keys[e.key] = false;
+    });
+
+    resetBall(Math.random() < 0.5 ? -1 : 1);
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
