@@ -16,8 +16,8 @@
     }
 
     .panel {
-      width: min(720px, 90vw);
-      background: rgba(17, 24, 39, 0.9);
+      width: min(760px, 90vw);
+      background: rgba(17, 24, 39, 0.94);
       border: 2px solid rgba(255,255,255,0.08);
       border-radius: 20px;
       padding: 24px;
@@ -25,174 +25,37 @@
       text-align: center;
     }
 
-    h1 {
-      margin-top: 0;
-      font-size: clamp(2rem, 4vw, 3rem);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .status {
-      margin: 20px 0;
-      font-size: 1.1rem;
-      color: #dbeafe;
-    }
-
-    .meter {
-      width: 100%;
-      height: 28px;
-      background: #1f2937;
-      border-radius: 999px;
-      overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.08);
-      margin: 20px 0;
-    }
-
-    .meter-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #34d399, #7dd3fc, #fbbf24);
-      transition: width 0.08s ease;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button {
-      background: #7ef9a9;
-      color: #08130e;
-      border: none;
-      border-radius: 999px;
-      padding: 12px 20px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:focus-visible, input:focus-visible, a:focus-visible {
-      outline: 3px solid #fbbf24;
-      outline-offset: 3px;
-    }
-
-    button.secondary {
-      background: #7dd3fc;
-      color: #06131b;
-    }
-
-    button:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: 16px;
-      color: #7dd3fc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .party {
-      margin: 28px 0 8px;
-      padding: 20px;
-      border: 1px solid rgba(125, 211, 252, 0.25);
-      border-radius: 16px;
-      background: rgba(31, 41, 55, 0.7);
-      text-align: left;
-    }
-
-    .party h2 {
-      margin: 0 0 8px;
-      text-align: center;
-    }
-
-    .party-description, .party-note {
-      color: #cbd5e1;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    .party-note {
-      font-size: 0.9rem;
-      margin-bottom: 0;
-    }
-
-    .party input {
-      width: min(260px, 100%);
-      box-sizing: border-box;
-      padding: 12px 16px;
-      border: 1px solid #64748b;
-      border-radius: 999px;
-      background: #0f172a;
-      color: white;
-    }
-
-    .party-room[hidden], .party-lobby[hidden] {
-      display: none;
-    }
-
-    .room-code {
-      color: #7dd3fc;
-      font-family: monospace;
-      font-size: 1.15rem;
-      overflow-wrap: anywhere;
-    }
-
-    .member {
-      margin: 16px auto;
-      padding: 12px 16px;
-      max-width: 280px;
-      border-radius: 12px;
-      background: #0f172a;
-      text-align: center;
-    }
-
-    .mic-prompt {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-      background: rgba(3, 7, 18, 0.78);
-    }
-
-    .mic-prompt[hidden] {
-      display: none;
-    }
-
-    .prompt-card {
-      width: min(420px, 100%);
-      padding: 28px;
-      border: 1px solid rgba(125, 211, 252, 0.35);
-      border-radius: 18px;
-      background: #172033;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-      text-align: center;
-    }
-
-    .prompt-card h2 {
-      margin: 0 0 12px;
-    }
-
-    .prompt-card p {
-      color: #dbeafe;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 480px) {
-      .panel { padding: 18px; }
-      .party { padding: 16px; }
-    }
+    h1 { margin-top: 0; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.06em; text-transform: uppercase; }
+    .status { margin: 16px 0; font-size: 1.05rem; color: #dbeafe; }
+    .meter { width: 100%; height: 24px; box-sizing: border-box; background: #1f2937; border-radius: 999px; overflow: hidden; border: 2px solid rgba(255,255,255,0.08); margin: 18px 0; }
+    .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #34d399, #7dd3fc, #fbbf24); transition: width 0.08s ease; }
+    .controls { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    button, input, textarea { font: inherit; }
+    button { background: #7ef9a9; color: #08130e; border: none; border-radius: 999px; padding: 12px 20px; font-size: 1rem; font-weight: bold; cursor: pointer; }
+    button.secondary { background: #7dd3fc; color: #06131b; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #fbbf24; outline-offset: 3px; }
+    a { display: inline-block; margin-top: 18px; color: #7dd3fc; text-decoration: none; font-weight: bold; }
+    .party { margin: 24px 0 8px; padding: 20px; border: 1px solid rgba(125, 211, 252, 0.25); border-radius: 16px; background: rgba(31, 41, 55, 0.7); text-align: left; }
+    .party h2, .party h3 { text-align: center; }
+    .party h2 { margin: 0 0 8px; }
+    .party p { color: #cbd5e1; line-height: 1.5; }
+    .party-description, .party-note { text-align: center; }
+    .party-note { font-size: 0.9rem; margin-bottom: 0; }
+    .party input, .party textarea { box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid #64748b; border-radius: 12px; background: #0f172a; color: white; }
+    .party textarea { min-height: 100px; resize: vertical; font-family: monospace; font-size: 0.85rem; }
+    .room-code { color: #7dd3fc; font-family: monospace; overflow-wrap: anywhere; }
+    .party-room[hidden] { display: none; }
+    .exchange { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); }
+    .exchange label { display: block; margin: 12px 0 6px; color: #dbeafe; }
+    .member-list { display: grid; gap: 8px; margin: 16px 0; }
+    .member { padding: 12px 16px; border-radius: 12px; background: #0f172a; text-align: center; }
+    .mic-prompt { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; padding: 20px; background: rgba(3, 7, 18, 0.78); }
+    .mic-prompt[hidden] { display: none; }
+    .prompt-card { width: min(420px, 100%); padding: 28px; border: 1px solid rgba(125, 211, 252, 0.35); border-radius: 18px; background: #172033; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); text-align: center; }
+    .prompt-card h2 { margin: 0 0 12px; }
+    .prompt-card p { color: #dbeafe; line-height: 1.5; }
+    @media (max-width: 480px) { .panel { padding: 18px; } .party { padding: 16px; } }
   </style>
 </head>
 <body>
@@ -202,43 +65,55 @@
 
     <section class="party" aria-labelledby="partyTitle">
       <h2 id="partyTitle">Voice Party</h2>
-      <div id="partyLobby" class="party-lobby">
-        <p class="party-description">Start a party and share its invite link with friends.</p>
+      <div id="partyLobby">
+        <p class="party-description">Create a room, then exchange a voice invite with a friend.</p>
         <div class="controls">
           <button id="createPartyBtn" type="button">Create a party</button>
           <input id="partyCodeInput" type="text" maxlength="12" autocomplete="off" aria-label="Party code" placeholder="Enter party code">
-          <button id="joinPartyBtn" class="secondary" type="button">Join party</button>
+          <button id="joinPartyBtn" class="secondary" type="button">Open party</button>
         </div>
         <p id="partyMessage" class="party-note" role="status" aria-live="polite"></p>
       </div>
       <div id="partyRoom" class="party-room" hidden>
-        <p>Party code: <strong id="partyCode" class="room-code"></strong></p>
-        <div class="member" aria-label="Current participant">🟢 You</div>
+        <p>Room code: <strong id="partyCode" class="room-code"></strong></p>
         <div class="controls">
-          <button id="copyInviteBtn" type="button">Copy invite link</button>
-          <button id="leavePartyBtn" class="secondary" type="button">Leave party</button>
+          <button id="copyRoomBtn" type="button">Copy room link</button>
+          <button id="leavePartyBtn" class="secondary" type="button">Leave room</button>
         </div>
-        <p id="inviteMessage" class="party-note" role="status" aria-live="polite"></p>
+        <div class="member-list" id="memberList" aria-live="polite">
+          <div class="member" id="youMember">🟢 You (microphone off)</div>
+        </div>
+        <div class="exchange">
+          <h3>Connect voice</h3>
+          <p>Turn on your mic first. Create an invite and send its text to a friend. They paste it below and send their reply text back to you. You can repeat this to invite more people. Signaling is exchanged manually because this GitHub Pages site has no server.</p>
+          <div class="controls">
+            <button id="createVoiceInviteBtn" type="button">Create voice invite</button>
+            <button id="joinVoiceBtn" class="secondary" type="button">Join with invite</button>
+            <button id="acceptAnswerBtn" type="button">Accept reply</button>
+          </div>
+          <label for="signalInput">Paste an invite to join, or a reply to accept:</label>
+          <textarea id="signalInput" spellcheck="false" autocomplete="off" placeholder="Paste the voice invite or reply here"></textarea>
+          <label for="signalOutput">Send this text to the other person:</label>
+          <textarea id="signalOutput" readonly spellcheck="false" placeholder="Your invite or reply will appear here"></textarea>
+          <div class="controls"><button id="copySignalBtn" class="secondary" type="button">Copy invite/reply</button></div>
+          <p id="voiceMessage" class="party-note" role="status" aria-live="polite"></p>
+        </div>
       </div>
-      <p class="party-note">Party links let friends open the same room. Remote participants and group audio need a signaling service, which this static site does not currently have.</p>
+      <p class="party-note">Voice uses direct peer-to-peer browser connections. Use HTTPS (GitHub Pages is HTTPS); your browser will ask permission for the microphone.</p>
     </section>
 
-    <div class="meter" role="img" aria-label="Local microphone volume meter">
-      <div class="meter-fill" id="meter"></div>
-    </div>
-
+    <div class="meter" role="img" aria-label="Local microphone volume meter"><div class="meter-fill" id="meter"></div></div>
     <div class="controls">
       <button id="toggleBtn" type="button">Enable Mic</button>
       <button id="muteBtn" class="secondary" type="button">Mute</button>
     </div>
-
     <a href="index.html">Back to arcade</a>
   </main>
 
   <div class="mic-prompt" id="micPrompt" role="dialog" aria-modal="true" aria-labelledby="promptTitle" aria-describedby="promptDescription" hidden>
     <div class="prompt-card">
       <h2 id="promptTitle">Enable your microphone?</h2>
-      <p id="promptDescription">Voice Chat needs microphone access to detect your voice and show the audio level. Your browser will ask you to allow access.</p>
+      <p id="promptDescription">Voice Chat needs microphone access to detect your voice and send audio to people you connect with. Your browser will ask you to allow access.</p>
       <div class="controls">
         <button id="allowMicBtn" type="button">Allow microphone</button>
         <button id="cancelMicBtn" class="secondary" type="button">Not now</button>
@@ -259,7 +134,11 @@
     var partyCodeEl = document.getElementById('partyCode');
     var partyCodeInput = document.getElementById('partyCodeInput');
     var partyMessage = document.getElementById('partyMessage');
-    var inviteMessage = document.getElementById('inviteMessage');
+    var voiceMessage = document.getElementById('voiceMessage');
+    var signalInput = document.getElementById('signalInput');
+    var signalOutput = document.getElementById('signalOutput');
+    var memberList = document.getElementById('memberList');
+    var youMember = document.getElementById('youMember');
     var partyCode = new URLSearchParams(window.location.search).get('party');
 
     var audioContext = null;
@@ -267,10 +146,11 @@
     var micStream = null;
     var sourceNode = null;
     var muted = false;
+    var peers = [];
+    var pendingPeer = null;
 
-    function setStatus(text) {
-      statusEl.textContent = text;
-    }
+    function setStatus(text) { statusEl.textContent = text; }
+    function setVoiceMessage(text) { voiceMessage.textContent = text; }
 
     function showParty(code) {
       partyCode = code;
@@ -278,16 +158,203 @@
       partyLobby.hidden = true;
       partyRoom.hidden = false;
       partyMessage.textContent = '';
-      inviteMessage.textContent = '';
+      setVoiceMessage('');
     }
 
     function createPartyCode() {
-      var randomPart = window.crypto && window.crypto.getRandomValues
-        ? Array.from(window.crypto.getRandomValues(new Uint8Array(4)), function(value) {
-            return value.toString(16).padStart(2, '0');
-          }).join('')
-        : Math.random().toString(36).slice(2, 10);
-      return randomPart.toUpperCase();
+      var bytes = new Uint8Array(4);
+      if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(bytes);
+        return Array.from(bytes, function(value) { return value.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+      }
+      return Math.random().toString(36).slice(2, 10).toUpperCase();
+    }
+
+    function updateMembers() {
+      youMember.textContent = muted ? '🔇 You (muted)' : (micStream ? '🟢 You (microphone on)' : '⚪ You (microphone off)');
+      peers.forEach(function(peer) {
+        var member = document.getElementById(peer.memberId);
+        if (member) member.textContent = (peer.pc.connectionState === 'connected' ? '🟢 ' : '🟡 ') + peer.label + ' (' + peer.pc.connectionState + ')';
+      });
+    }
+
+    function updateMeter() {
+      if (!analyser) return;
+      var data = new Uint8Array(analyser.fftSize);
+      analyser.getByteFrequencyData(data);
+      var total = 0;
+      for (var i = 0; i < data.length; i++) total += data[i];
+      meterEl.style.width = Math.min(100, (total / data.length) / 255 * 100) + '%';
+      requestAnimationFrame(updateMeter);
+    }
+
+    async function startMic() {
+      micPrompt.hidden = true;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setStatus('Microphone access is not supported in this browser.');
+        return false;
+      }
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 512;
+        sourceNode = audioContext.createMediaStreamSource(micStream);
+        sourceNode.connect(analyser);
+        if (muted) micStream.getAudioTracks().forEach(function(track) { track.enabled = false; });
+        toggleBtn.textContent = 'Disable Mic';
+        setStatus(muted ? 'Microphone is muted.' : 'Microphone is ready for voice chat.');
+        updateMembers();
+        requestAnimationFrame(updateMeter);
+        return true;
+      } catch (error) {
+        setStatus('Microphone permission was denied or unavailable.');
+        return false;
+      }
+    }
+
+    function stopMic() {
+      if (micStream) micStream.getTracks().forEach(function(track) { track.stop(); });
+      if (sourceNode) sourceNode.disconnect();
+      if (audioContext) audioContext.close();
+      micStream = null;
+      sourceNode = null;
+      analyser = null;
+      audioContext = null;
+      meterEl.style.width = '0%';
+      toggleBtn.textContent = 'Enable Mic';
+      setStatus('Microphone is off.');
+      updateMembers();
+    }
+
+    function waitForIceGathering(pc) {
+      if (pc.iceGatheringState === 'complete') return Promise.resolve();
+      return new Promise(function(resolve) {
+        var finished = false;
+        var timer = setTimeout(done, 10000);
+        function done() {
+          if (finished) return;
+          finished = true;
+          clearTimeout(timer);
+          pc.removeEventListener('icegatheringstatechange', check);
+          resolve();
+        }
+        function check() { if (pc.iceGatheringState === 'complete') done(); }
+        pc.addEventListener('icegatheringstatechange', check);
+      });
+    }
+
+    function encodeSignal(description) {
+      return btoa(unescape(encodeURIComponent(JSON.stringify({ type: description.type, sdp: description.sdp }))));
+    }
+
+    function decodeSignal(text, expectedType) {
+      var value;
+      try {
+        value = JSON.parse(decodeURIComponent(escape(atob(text.trim()))));
+      } catch (error) {
+        throw new Error('That text is not a valid voice invite or reply. Copy the complete text and try again.');
+      }
+      if (!value || value.type !== expectedType || typeof value.sdp !== 'string') {
+        throw new Error('This is not a ' + expectedType + '. Check whether you pasted the right text.');
+      }
+      return value;
+    }
+
+    function makePeer(label) {
+      var pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      var peer = { pc: pc, label: label, memberId: 'peer-' + Math.random().toString(36).slice(2), audio: null };
+      peers.push(peer);
+      if (micStream) micStream.getTracks().forEach(function(track) { pc.addTrack(track, micStream); });
+      pc.ontrack = function(event) {
+        if (!peer.audio) {
+          peer.audio = document.createElement('audio');
+          peer.audio.autoplay = true;
+          peer.audio.playsInline = true;
+          peer.audio.setAttribute('aria-label', 'Voice from ' + label);
+          document.body.appendChild(peer.audio);
+        }
+        peer.audio.srcObject = event.streams[0];
+      };
+      pc.onconnectionstatechange = function() {
+        updateMembers();
+        if (pc.connectionState === 'failed' || pc.connectionState === 'closed' || pc.connectionState === 'disconnected') {
+          if (pc.connectionState !== 'disconnected') removePeer(peer);
+        }
+      };
+      var member = document.createElement('div');
+      member.className = 'member';
+      member.id = peer.memberId;
+      member.textContent = '🟡 ' + label + ' (connecting)';
+      memberList.appendChild(member);
+      return peer;
+    }
+
+    function removePeer(peer) {
+      if (peer.audio) {
+        peer.audio.srcObject = null;
+        peer.audio.remove();
+      }
+      var member = document.getElementById(peer.memberId);
+      if (member) member.remove();
+      peers = peers.filter(function(item) { return item !== peer; });
+      if (pendingPeer === peer) pendingPeer = null;
+      updateMembers();
+    }
+
+    async function createVoiceInvite() {
+      if (!micStream) {
+        setVoiceMessage('Enable your microphone before creating a voice invite.');
+        return;
+      }
+      try {
+        if (pendingPeer) { pendingPeer.pc.close(); removePeer(pendingPeer); }
+        pendingPeer = makePeer('Friend ' + (peers.length));
+        var offer = await pendingPeer.pc.createOffer();
+        await pendingPeer.pc.setLocalDescription(offer);
+        await waitForIceGathering(pendingPeer.pc);
+        signalOutput.value = encodeSignal(pendingPeer.pc.localDescription);
+        setVoiceMessage('Invite ready. Send the complete text above to one friend. When they reply, paste their text and choose “Accept reply”.');
+      } catch (error) {
+        setVoiceMessage('Could not create an invite: ' + error.message);
+      }
+    }
+
+    async function joinVoiceInvite() {
+      if (!micStream) {
+        setVoiceMessage('Enable your microphone before joining a voice invite.');
+        return;
+      }
+      var peer;
+      try {
+        var offer = decodeSignal(signalInput.value, 'offer');
+        peer = makePeer('Friend ' + (peers.length + 1));
+        await peer.pc.setRemoteDescription(offer);
+        var answer = await peer.pc.createAnswer();
+        await peer.pc.setLocalDescription(answer);
+        await waitForIceGathering(peer.pc);
+        signalOutput.value = encodeSignal(peer.pc.localDescription);
+        setVoiceMessage('Reply ready. Send the complete text above back to the person who invited you.');
+      } catch (error) {
+        if (peer) { peer.pc.close(); removePeer(peer); }
+        setVoiceMessage(error.message);
+      }
+    }
+
+    async function acceptAnswer() {
+      if (!pendingPeer) {
+        setVoiceMessage('Create a voice invite first, then paste the reply here.');
+        return;
+      }
+      try {
+        var answer = decodeSignal(signalInput.value, 'answer');
+        await pendingPeer.pc.setRemoteDescription(answer);
+        pendingPeer.label = 'Friend ' + peers.indexOf(pendingPeer) + ' (invited)';
+        setVoiceMessage('Reply accepted. Connecting voice… Keep this page open.');
+        updateMembers();
+      } catch (error) {
+        setVoiceMessage(error.message);
+      }
     }
 
     document.getElementById('createPartyBtn').addEventListener('click', function() {
@@ -301,7 +368,7 @@
     document.getElementById('joinPartyBtn').addEventListener('click', function() {
       var code = partyCodeInput.value.trim().toUpperCase();
       if (!/^[A-Z0-9]{4,12}$/.test(code)) {
-        partyMessage.textContent = 'Enter a party code with 4–12 letters or numbers.';
+        partyMessage.textContent = 'Enter a room code with 4–12 letters or numbers.';
         partyCodeInput.focus();
         return;
       }
@@ -315,18 +382,19 @@
       if (event.key === 'Enter') document.getElementById('joinPartyBtn').click();
     });
 
-    document.getElementById('copyInviteBtn').addEventListener('click', async function() {
+    document.getElementById('copyRoomBtn').addEventListener('click', async function() {
       var url = new URL(window.location.href);
       url.searchParams.set('party', partyCode);
       try {
         await navigator.clipboard.writeText(url.toString());
-        inviteMessage.textContent = 'Invite link copied. Send it to your friends.';
+        partyMessage.textContent = 'Room link copied. Voice still needs the invite/reply exchange below.';
       } catch (error) {
-        inviteMessage.textContent = 'Copy was blocked by your browser. Copy this link from the address bar: ' + url.toString();
+        partyMessage.textContent = 'Copy was blocked. Copy the room link from your address bar.';
       }
     });
 
     document.getElementById('leavePartyBtn').addEventListener('click', function() {
+      peers.slice().forEach(function(peer) { peer.pc.close(); removePeer(peer); });
       var url = new URL(window.location.href);
       url.searchParams.delete('party');
       window.history.replaceState({}, '', url);
@@ -334,87 +402,40 @@
       partyRoom.hidden = true;
       partyLobby.hidden = false;
       partyCodeInput.value = '';
-      partyMessage.textContent = 'You left the party.';
+      signalInput.value = '';
+      signalOutput.value = '';
+      setVoiceMessage('');
+      partyMessage.textContent = 'You left the room.';
+    });
+
+    document.getElementById('createVoiceInviteBtn').addEventListener('click', createVoiceInvite);
+    document.getElementById('joinVoiceBtn').addEventListener('click', joinVoiceInvite);
+    document.getElementById('acceptAnswerBtn').addEventListener('click', acceptAnswer);
+
+    document.getElementById('copySignalBtn').addEventListener('click', async function() {
+      if (!signalOutput.value) { setVoiceMessage('Create an invite or reply first.'); return; }
+      try {
+        await navigator.clipboard.writeText(signalOutput.value);
+        setVoiceMessage('Invite/reply copied to clipboard.');
+      } catch (error) {
+        signalOutput.focus();
+        signalOutput.select();
+        setVoiceMessage('Clipboard access was blocked. The text is selected so you can copy it.');
+      }
     });
 
     if (partyCode && /^[A-Z0-9]{4,12}$/i.test(partyCode)) {
       showParty(partyCode.toUpperCase());
     } else if (partyCode) {
-      partyMessage.textContent = 'That party link has an invalid code.';
+      partyMessage.textContent = 'That room link has an invalid code.';
       var cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('party');
       window.history.replaceState({}, '', cleanUrl);
     }
 
-    function updateMeter() {
-      if (!analyser) return;
-
-      var data = new Uint8Array(analyser.fftSize);
-      analyser.getByteFrequencyData(data);
-
-      var total = 0;
-      for (var i = 0; i < data.length; i++) {
-        total += data[i];
-      }
-      var avg = total / data.length;
-      var percent = Math.min(100, avg / 255 * 100);
-
-      meterEl.style.width = percent + '%';
-
-      if (!muted && micStream) {
-        setStatus('Microphone is live. Press the button again to stop.');
-      }
-
-      requestAnimationFrame(updateMeter);
-    }
-
-    function stopMic() {
-      if (micStream) {
-        micStream.getTracks().forEach(function(track) {
-          track.stop();
-        });
-      }
-      if (sourceNode) {
-        sourceNode.disconnect();
-      }
-      if (audioContext) {
-        audioContext.close();
-      }
-      micStream = null;
-      sourceNode = null;
-      analyser = null;
-      audioContext = null;
-      meterEl.style.width = '0%';
-      setStatus('Microphone is off.');
-      toggleBtn.textContent = 'Enable Mic';
-    }
-
-    async function startMic() {
-      micPrompt.hidden = true;
-
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setStatus('This browser does not support microphone access.');
-        return;
-      }
-
-      try {
-        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 512;
-        sourceNode = audioContext.createMediaStreamSource(micStream);
-        sourceNode.connect(analyser);
-
-        toggleBtn.textContent = 'Disable Mic';
-        setStatus('Microphone is live. This tests your local mic only.');
-        requestAnimationFrame(updateMeter);
-      } catch (error) {
-        setStatus('Microphone permission was denied or unavailable.');
-      }
-    }
-
     toggleBtn.addEventListener('click', function() {
       if (micStream) {
+        peers.slice().forEach(function(peer) { peer.pc.close(); removePeer(peer); });
         stopMic();
       } else {
         micPrompt.hidden = false;
@@ -423,7 +444,6 @@
     });
 
     allowMicBtn.addEventListener('click', startMic);
-
     cancelMicBtn.addEventListener('click', function() {
       micPrompt.hidden = true;
       setStatus('Microphone access was not enabled.');
@@ -432,13 +452,10 @@
 
     muteBtn.addEventListener('click', function() {
       muted = !muted;
-      if (micStream) {
-        micStream.getAudioTracks().forEach(function(track) {
-          track.enabled = !muted;
-        });
-      }
-      setStatus(muted ? 'Voice chat muted.' : (micStream ? 'Microphone is live.' : 'Microphone is off.'));
+      if (micStream) micStream.getAudioTracks().forEach(function(track) { track.enabled = !muted; });
       muteBtn.textContent = muted ? 'Unmute' : 'Mute';
+      setStatus(muted ? 'Microphone muted.' : (micStream ? 'Microphone is ready for voice chat.' : 'Microphone is off.'));
+      updateMembers();
     });
   </script>
 </body>
