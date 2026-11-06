@@ -86,6 +86,39 @@
       text-decoration: none;
       font-weight: bold;
     }
+
+    .mic-prompt {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(3, 7, 18, 0.78);
+    }
+
+    .mic-prompt[hidden] {
+      display: none;
+    }
+
+    .prompt-card {
+      width: min(420px, 100%);
+      padding: 28px;
+      border: 1px solid rgba(125, 211, 252, 0.35);
+      border-radius: 18px;
+      background: #172033;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .prompt-card h2 {
+      margin: 0 0 12px;
+    }
+
+    .prompt-card p {
+      color: #dbeafe;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -105,11 +138,25 @@
     <a href="index.html">Back to arcade</a>
   </div>
 
+  <div class="mic-prompt" id="micPrompt" role="dialog" aria-modal="true" aria-labelledby="promptTitle" aria-describedby="promptDescription">
+    <div class="prompt-card">
+      <h2 id="promptTitle">Enable your microphone?</h2>
+      <p id="promptDescription">Voice Chat needs microphone access to detect your voice and show the audio level. Your browser will ask you to allow access.</p>
+      <div class="controls">
+        <button id="allowMicBtn">Allow microphone</button>
+        <button id="cancelMicBtn" class="secondary">Not now</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     var statusEl = document.getElementById('status');
     var meterEl = document.getElementById('meter');
     var toggleBtn = document.getElementById('toggleBtn');
     var muteBtn = document.getElementById('muteBtn');
+    var micPrompt = document.getElementById('micPrompt');
+    var allowMicBtn = document.getElementById('allowMicBtn');
+    var cancelMicBtn = document.getElementById('cancelMicBtn');
 
     var audioContext = null;
     var analyser = null;
@@ -165,6 +212,8 @@
     }
 
     async function startMic() {
+      micPrompt.hidden = true;
+
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setStatus('This browser does not support microphone access.');
         return;
@@ -190,8 +239,17 @@
       if (micStream) {
         stopMic();
       } else {
-        startMic();
+        micPrompt.hidden = false;
+        allowMicBtn.focus();
       }
+    });
+
+    allowMicBtn.addEventListener('click', startMic);
+
+    cancelMicBtn.addEventListener('click', function() {
+      micPrompt.hidden = true;
+      setStatus('Microphone access was not enabled.');
+      toggleBtn.focus();
     });
 
     muteBtn.addEventListener('click', function() {
