@@ -52,42 +52,68 @@ function setDirection(nextDx, nextDy) {
   if (nextDx !== 0 && snake.dx !== -nextDx) {
     snake.dx = nextDx;
     snake.dy = 0;
-    return;
-  }
-
-  if (nextDy !== 0 && snake.dy !== -nextDy) {
+  } else if (nextDy !== 0 && snake.dy !== -nextDy) {
     snake.dx = 0;
     snake.dy = nextDy;
   }
 }
 
-function updateGamepadDirection() {
-  var gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
-  var gamepad = gamepads && gamepads[0];
+function getGamepadDirection(gamepad) {
+  var buttons = gamepad.buttons || [];
+  var directions = [
+    [12, 0, -grid], // D-pad up
+    [13, 0, grid],  // D-pad down
+    [14, -grid, 0], // D-pad left
+    [15, grid, 0]   // D-pad right
+  ];
 
-  if (!gamepad) {
-    return;
-  }
-
-  var stickX = gamepad.axes && gamepad.axes.length > 0 ? gamepad.axes[0] : 0;
-  var stickY = gamepad.axes && gamepad.axes.length > 1 ? gamepad.axes[1] : 0;
-
-  if (Math.abs(stickX) > gamepadDeadZone || Math.abs(stickY) > gamepadDeadZone) {
-    if (Math.abs(stickX) > Math.abs(stickY)) {
-      setDirection(stickX > 0 ? grid : -grid, 0);
-    } else {
-      setDirection(0, stickY < 0 ? -grid : grid);
+  // Standard-mapped controllers expose the D-pad at buttons 12-15.
+  for (var i = 0; i < directions.length; i++) {
+    var button = buttons[directions[i][0]];
+    if (button && button.pressed) {
+      return { dx: directions[i][1], dy: directions[i][2] };
     }
   }
 
-  if (gamepad.buttons[12] && gamepad.buttons[12].pressed) {
-    setDirection(0, -grid);
-  } else if (gamepad.buttons[13] && gamepad.buttons[13].pressed) {
-    setDirection(0, grid);
-  } else if (gamepad.buttons[14] && gamepad.buttons[14].pressed) {
-    setDirection(-grid, 0);
-  } else if (gamepad.buttons[15] && gamepad.buttons[15].pressed) {
-    setDirection(grid, 0);
+  // Check axis pairs so controllers that expose the stick on a later pair
+  // work too. Each pair is interpreted as horizontal then vertical.
+  var axes = gamepad.axes || [];
+  for (var axis = 0; axis + 1 < axes.length; axis += 2) {
+    var stickX = axes[axis] || 0;
+    var stickY = axes[axis + 1] || 0;
+    if (Math.abs(stickX) > gamepadDeadZone || Math.abs(stickY) > gamepadDeadZone) {
+      if (Math.abs(stickX) > Math.abs(stickY)) {
+        return { dx: stickX > 0 ? grid : -grid, dy: 0 };
+      }
+      return { dx: 0, dy: stickY < 0 ? -grid : grid };
+    }
+  }
+
+  return null;
+}
+
+function updateGamepadDirection() {
+  if (!navigator.getGamepads) {
+    return;
+  }
+
+  var gamepads = navigator.getGamepads();
+  if (!gamepads) {
+    return;
+  }
+
+  // Poll all connected controllers; the first one providing a direction wins.
+  for (var i = 0; i < gamepads.length; i++) {
+    var gamepad = gamepads[i];
+    if (!gamepad || !gamepad.connected) {
+      continue;
+    }
+
+    var direction = getGamepadDirection(gamepad);
+    if (direction) {
+      setDirection(direction.dx, direction.dy);
+      return;
+    }
   }
 }
 
@@ -149,13 +175,13 @@ function loop() {
 }
 
 document.addEventListener('keydown', function(e) {
-  if ((e.key === 'ArrowLeft' || e.which === 37) && snake.dx === 0) {
+  if (e.key === 'ArrowLeft' || e.which === 37) {
     setDirection(-grid, 0);
-  } else if ((e.key === 'ArrowUp' || e.which === 38) && snake.dy === 0) {
+  } else if (e.key === 'ArrowUp' || e.which === 38) {
     setDirection(0, -grid);
-  } else if ((e.key === 'ArrowRight' || e.which === 39) && snake.dx === 0) {
+  } else if (e.key === 'ArrowRight' || e.which === 39) {
     setDirection(grid, 0);
-  } else if ((e.key === 'ArrowDown' || e.which === 40) && snake.dy === 0) {
+  } else if (e.key === 'ArrowDown' || e.which === 40) {
     setDirection(0, grid);
   }
 });

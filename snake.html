@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>snake retro king</title>
   <style>
     body {
@@ -8,11 +10,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
     }
     canvas {
+      width: min(1000px, 100vw);
+      height: auto;
       border: 2px solid white;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -23,6 +28,7 @@ var canvas = document.getElementById('game');
 var context = canvas.getContext('2d');
 var grid = 16;
 var count = 0;
+var gamepadDeadZone = 0.5;
 
 var snake = {
   x: 160,
@@ -42,13 +48,79 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function setDirection(nextDx, nextDy) {
+  if (nextDx !== 0 && snake.dx !== -nextDx) {
+    snake.dx = nextDx;
+    snake.dy = 0;
+  } else if (nextDy !== 0 && snake.dy !== -nextDy) {
+    snake.dx = 0;
+    snake.dy = nextDy;
+  }
+}
+
+function getGamepadDirection(gamepad) {
+  var buttons = gamepad.buttons || [];
+  var directions = [
+    [12, 0, -grid],
+    [13, 0, grid],
+    [14, -grid, 0],
+    [15, grid, 0]
+  ];
+
+  for (var i = 0; i < directions.length; i++) {
+    var button = buttons[directions[i][0]];
+    if (button && button.pressed) {
+      return { dx: directions[i][1], dy: directions[i][2] };
+    }
+  }
+
+  var axes = gamepad.axes || [];
+  for (var axis = 0; axis + 1 < axes.length; axis += 2) {
+    var stickX = axes[axis] || 0;
+    var stickY = axes[axis + 1] || 0;
+    if (Math.abs(stickX) > gamepadDeadZone || Math.abs(stickY) > gamepadDeadZone) {
+      if (Math.abs(stickX) > Math.abs(stickY)) {
+        return { dx: stickX > 0 ? grid : -grid, dy: 0 };
+      }
+      return { dx: 0, dy: stickY < 0 ? -grid : grid };
+    }
+  }
+
+  return null;
+}
+
+function updateGamepadDirection() {
+  if (!navigator.getGamepads) {
+    return;
+  }
+
+  var gamepads = navigator.getGamepads();
+  if (!gamepads) {
+    return;
+  }
+
+  for (var i = 0; i < gamepads.length; i++) {
+    var gamepad = gamepads[i];
+    if (!gamepad || !gamepad.connected) {
+      continue;
+    }
+
+    var direction = getGamepadDirection(gamepad);
+    if (direction) {
+      setDirection(direction.dx, direction.dy);
+      return;
+    }
+  }
+}
+
 function loop() {
   requestAnimationFrame(loop);
+  updateGamepadDirection();
   if (++count < 6) {
     return;
   }
   count = 0;
-  context.clearRect(0,0,canvas.width,canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
 
   snake.x += snake.dx;
   snake.y += snake.dy;
@@ -71,15 +143,15 @@ function loop() {
   }
 
   context.fillStyle = 'red';
-  context.fillRect(apple.x, apple.y, grid-1, grid-1);
+  context.fillRect(apple.x, apple.y, grid - 1, grid - 1);
 
   context.fillStyle = 'lime';
   snake.cells.forEach(function(cell, index) {
-    context.fillRect(cell.x, cell.y, grid-1, grid-1);
+    context.fillRect(cell.x, cell.y, grid - 1, grid - 1);
     if (cell.x === apple.x && cell.y === apple.y) {
       snake.maxCells++;
-      apple.x = getRandomInt(0, 25) * grid;
-      apple.y = getRandomInt(0, 25) * grid;
+      apple.x = getRandomInt(0, Math.floor(canvas.width / grid)) * grid;
+      apple.y = getRandomInt(0, Math.floor(canvas.height / grid)) * grid;
     }
     for (var i = index + 1; i < snake.cells.length; i++) {
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
@@ -89,26 +161,22 @@ function loop() {
         snake.maxCells = 4;
         snake.dx = grid;
         snake.dy = 0;
-        apple.x = getRandomInt(0, 25) * grid;
-        apple.y = getRandomInt(0, 25) * grid;
+        apple.x = getRandomInt(0, Math.floor(canvas.width / grid)) * grid;
+        apple.y = getRandomInt(0, Math.floor(canvas.height / grid)) * grid;
       }
     }
   });
 }
 
 document.addEventListener('keydown', function(e) {
-  if (e.which === 37 && snake.dx === 0) {
-    snake.dx = -grid;
-    snake.dy = 0;
-  } else if (e.which === 38 && snake.dy === 0) {
-    snake.dy = -grid;
-    snake.dx = 0;
-  } else if (e.which === 39 && snake.dx === 0) {
-    snake.dx = grid;
-    snake.dy = 0;
-  } else if (e.which === 40 && snake.dy === 0) {
-    snake.dy = grid;
-    snake.dx = 0;
+  if (e.key === 'ArrowLeft' || e.which === 37) {
+    setDirection(-grid, 0);
+  } else if (e.key === 'ArrowUp' || e.which === 38) {
+    setDirection(0, -grid);
+  } else if (e.key === 'ArrowRight' || e.which === 39) {
+    setDirection(grid, 0);
+  } else if (e.key === 'ArrowDown' || e.which === 40) {
+    setDirection(0, grid);
   }
 });
 
