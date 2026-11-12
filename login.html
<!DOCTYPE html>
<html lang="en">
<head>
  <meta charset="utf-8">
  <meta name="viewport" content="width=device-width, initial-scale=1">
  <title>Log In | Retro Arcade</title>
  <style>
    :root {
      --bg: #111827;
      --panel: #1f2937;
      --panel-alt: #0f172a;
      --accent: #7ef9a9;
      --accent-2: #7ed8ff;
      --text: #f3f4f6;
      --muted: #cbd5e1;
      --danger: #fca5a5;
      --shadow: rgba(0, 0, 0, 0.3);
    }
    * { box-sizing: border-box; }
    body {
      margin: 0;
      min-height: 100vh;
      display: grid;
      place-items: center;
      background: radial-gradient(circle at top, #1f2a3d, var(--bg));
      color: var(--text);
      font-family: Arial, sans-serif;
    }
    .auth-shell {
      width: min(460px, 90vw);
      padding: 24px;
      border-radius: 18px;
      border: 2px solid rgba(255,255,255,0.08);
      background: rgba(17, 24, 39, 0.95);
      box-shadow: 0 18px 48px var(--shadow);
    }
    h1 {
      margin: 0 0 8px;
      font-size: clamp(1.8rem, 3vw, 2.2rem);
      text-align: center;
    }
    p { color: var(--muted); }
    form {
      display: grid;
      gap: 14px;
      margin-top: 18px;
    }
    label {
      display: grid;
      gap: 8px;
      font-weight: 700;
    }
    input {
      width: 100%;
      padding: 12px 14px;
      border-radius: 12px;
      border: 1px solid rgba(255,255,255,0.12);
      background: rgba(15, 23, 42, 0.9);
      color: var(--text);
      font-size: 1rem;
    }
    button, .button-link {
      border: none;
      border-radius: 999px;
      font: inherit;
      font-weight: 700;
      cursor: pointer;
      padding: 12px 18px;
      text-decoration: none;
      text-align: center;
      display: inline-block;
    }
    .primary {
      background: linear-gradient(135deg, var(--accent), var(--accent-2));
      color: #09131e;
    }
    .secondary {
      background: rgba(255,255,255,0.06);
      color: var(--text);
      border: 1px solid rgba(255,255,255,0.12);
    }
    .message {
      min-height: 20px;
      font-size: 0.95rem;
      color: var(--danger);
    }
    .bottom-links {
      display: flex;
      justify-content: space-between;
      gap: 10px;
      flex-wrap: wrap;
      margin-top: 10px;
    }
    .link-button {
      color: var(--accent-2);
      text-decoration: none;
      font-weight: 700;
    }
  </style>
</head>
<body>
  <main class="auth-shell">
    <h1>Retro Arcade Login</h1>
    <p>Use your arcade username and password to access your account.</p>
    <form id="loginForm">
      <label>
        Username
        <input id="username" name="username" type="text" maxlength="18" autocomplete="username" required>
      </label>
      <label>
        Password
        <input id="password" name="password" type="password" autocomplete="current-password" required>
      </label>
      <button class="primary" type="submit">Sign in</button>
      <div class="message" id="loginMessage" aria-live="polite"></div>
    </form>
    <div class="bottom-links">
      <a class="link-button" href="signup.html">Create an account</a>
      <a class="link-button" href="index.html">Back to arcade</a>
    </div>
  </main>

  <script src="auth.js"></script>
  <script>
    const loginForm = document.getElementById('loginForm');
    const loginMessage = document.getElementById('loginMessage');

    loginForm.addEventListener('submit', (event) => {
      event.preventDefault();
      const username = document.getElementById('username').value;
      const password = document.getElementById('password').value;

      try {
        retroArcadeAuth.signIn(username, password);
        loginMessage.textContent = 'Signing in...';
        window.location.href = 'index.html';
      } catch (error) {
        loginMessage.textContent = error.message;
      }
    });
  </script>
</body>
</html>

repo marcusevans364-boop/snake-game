@@ -1,0 +1,200 @@
+const ACCOUNTS_KEY = 'retro_arcade_accounts_v1';
+const SESSION_KEY = 'retro_arcade_session_v1';
+
+function getAccounts() {
+  try {
+    const raw = localStorage.getItem(ACCOUNTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveAccounts(accounts) {
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+}
+
+function sanitizeUserName(value) {
+  return String(value || '').trim();
+}
+
+function createAccount(username, password) {
+  const name = sanitizeUserName(username);
+  const cleanPassword = String(password || '').trim();
+
+  if (!name || name.length < 3) {
+    throw new Error('Username must be at least 3 characters long.');
+  }
+
+  if (name.length > 18) {
+    throw new Error('Username cannot be longer than 18 characters.');
+  }
+
+  if (!/^[a-zA-Z0-9_\-]+$/.test(name)) {
+    throw new Error('Username can only contain letters, numbers, underscores, and dashes.');
+  }
+
+  if (cleanPassword.length < 4) {
+    throw new Error('Password must be at least 4 characters long.');
+  }
+
+  const accounts = getAccounts();
+  const existing = accounts.find(account => account.username.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    throw new Error('That username is already taken.');
+  }
+
+  const user = {
+    username: name,
+    password: cleanPassword,
+    createdAt: new Date().toISOString(),
+    wins: 0,
+    gamesPlayed: 0,
+    status: 'online'
+  };
+
+  accounts.push(user);
+  saveAccounts(accounts);
+  return user;
+}
+
+function signIn(username, password) {
+  const name = sanitizeUserName(username);
+  const cleanPassword = String(password || '').trim();
+
+  const accounts = getAccounts();
+  const user = accounts.find(account => account.username.toLowerCase() === name.toLowerCase() && account.password === cleanPassword);
+
+  if (!user) {
+    throw new Error('Incorrect username or password.');
+  }
+
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ username: user.username }));
+  return { username: user.username };
+}
+
+function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const session = JSON.parse(raw);
+    if (!session || !session.username) return null;
+    const accounts = getAccounts();
+    return accounts.find(account => account.username.toLowerCase() === String(session.username).toLowerCase()) || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function signOut() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function saveUserProfile(profile) {
+  const current = getCurrentUser();
+  if (!current) return;
+
+  const accounts = getAccounts();
+  const index = accounts.findIndex(account => account.username.toLowerCase() === current.username.toLowerCase());
+  if (index === -1) return;
+
+  accounts[index] = { ...accounts[index], ...profile };
+  saveAccounts(accounts);
+}
+
+function requireAuth() {
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = 'login.html';
+    return null;
+  }
+  return user;
+}
+
+function renderAccountStatus(targetId) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+
+  const user = getCurrentUser();
+  if (!user) {
+    el.innerHTML = '<span class="status-pill offline">Not signed in</span><div class="account-actions"><a href="login.html">Log in</a><a href="signup.html">Create account</a></div>';
+    return;
+  }
+
+  el.innerHTML = `
+    <span class="status-pill online">Signed in as ${user.username}</span>
+    <div class="account-actions">
+      <a href="index.html">Arcade</a>
+      <button type="button" class="mini-btn" id="accountSignOutBtn">Sign out</button>
+    </div>
+  `;
+
+  const signOutButton = document.getElementById('accountSignOutBtn');
+  if (signOutButton) {
+    signOutButton.addEventListener('click', () => {
+      signOut();
+      location.reload();
+    });
+  }
+}
+
+function updateProfileStats() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const winNode = document.getElementById('profileWins');
+  const gamesNode = document.getElementById('profileGames');
+  if (winNode) winNode.textContent = user.wins || 0;
+  if (gamesNode) gamesNode.textContent = user.gamesPlayed || 0;
+}
+
+function awardWin() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const accounts = getAccounts();
+  const index = accounts.findIndex(account => account.username.toLowerCase() === user.username.toLowerCase());
+  if (index === -1) return;
+
+  accounts[index].wins = Number(accounts[index].wins || 0) + 1;
+  accounts[index].gamesPlayed = Number(accounts[index].gamesPlayed || 0) + 1;
+  saveAccounts(accounts);
+}
+
+function recordGameResult(result) {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const accounts = getAccounts();
+  const index = accounts.findIndex(account => account.username.toLowerCase() === user.username.toLowerCase());
+  if (index === -1) return;
+
+  accounts[index].gamesPlayed = Number(accounts[index].gamesPlayed || 0) + 1;
+  if (result === 'win') {
+    accounts[index].wins = Number(accounts[index].wins || 0) + 1;
+  }
+  saveAccounts(accounts);
+}
+
+window.retroArcadeAuth = {
+  getAccounts,
+  createAccount,
+  signIn,
+  signOut,
+  getCurrentUser,
+  requireAuth,
+  renderAccountStatus,
+  updateProfileStats,
+  awardWin,
+  recordGameResult,
+  saveUserProfile
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderAccountStatus('authStatus');
+  updateProfileStats();
+});
+
+if (typeof window !== 'undefined') {
+  window.RETRO_ARCADE = window.RETRO_ARCADE || {};
+}

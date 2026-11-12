@@ -1,0 +1,272 @@
+README.md
+# Retro Arcade
+
+A simple browser-based arcade website with classic mini-games built using HTML, CSS, and JavaScript.
+
+## Features
+
+- Arcade menu with browser account login/signup
+- Username + password account system using browser localStorage
+- Profile stats saved per account
+- Voice chat lobby with room code and direct invite flow
+- Member list and better room controls
+
+## Games Included
+
+- Snake
+- Pong
+- Tic-Tac-Toe
+- Call of Duty
+- Voice Chat
+
+## How to Run
+
+Because this project is fully static, you can view it locally in a browser by opening `index.html` directly.
+
+For a local web server, run:
+
+```bash
+python -m http.server 8000
+```
+
+Then open:
+
+```text
+http://localhost:8000
+```
+
+## Account System
+
+This project includes a local arcade account system using browser `localStorage` for a simple demo experience. Create an account from the home page, log in, and see your username reflected in the arcade and voice chat pages.
+
+Note: this is a front-end demo, not a production-grade security system. For a real online app, use a backend service such as Firebase or Supabase Auth.
+
+## Project Structure
+
+- `index.html` — arcade home menu and account panel
+- `login.html` — login form
+- `signup.html` — account creation form
+- `auth.js` — account storage and session logic
+- `snake.html` — Snake game
+- `pong.html` — Pong game
+- `tictactoe.html` — Tic-Tac-Toe game
+- `callofduty.html` — shooter-style game
+- `voicechat.html` — browser microphone voice chat demo with room UI
+
+## Notes
+
+This project is designed as a lightweight front-end demo and does not require any framework or installation steps.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
