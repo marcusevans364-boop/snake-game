@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Account | Retro Arcade</title>
+  <style>
+    :root {
+      --bg: #111827;
+      --panel: #1f2937;
+      --text: #f3f4f6;
+      --muted: #cbd5e1;
+      --accent: #7ef9a9;
+      --accent-2: #7ed8ff;
+      --danger: #fca5a5;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #1f2a3d, var(--bg));
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+    .auth-shell {
+      width: min(460px, 90vw);
+      padding: 24px;
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.08);
+      background: rgba(17, 24, 39, 0.95);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+    h1 {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: clamp(1.8rem, 3vw, 2.2rem);
+    }
+    p { color: var(--muted); }
+    form {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    label {
+      display: grid;
+      gap: 8px;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 12px 18px;
+    }
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #09131e;
+    }
+    .message {
+      min-height: 20px;
+      font-size: 0.95rem;
+      color: var(--danger);
+    }
+    .bottom-links {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .link-button {
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-shell">
+    <h1>Create Arcade Account</h1>
+    <p>Create a username and password to save your wins and room identity.</p>
+
+    <form id="signupForm">
+      <label>
+        Username
+        <input id="username" name="username" type="text" maxlength="18" autocomplete="username" required>
+      </label>
+      <label>
+        Password
+        <input id="password" name="password" type="password" minlength="4" autocomplete="new-password" required>
+      </label>
+      <button class="primary" type="submit">Create account</button>
+      <div class="message" id="signupMessage" aria-live="polite"></div>
+    </form>
+
+    <div class="bottom-links">
+      <a class="link-button" href="login.html">Already have an account?</a>
+      <a class="link-button" href="index.html">Back to arcade</a>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    const signupForm = document.getElementById('signupForm');
+    const signupMessage = document.getElementById('signupMessage');
+
+    signupForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        await window.retroArcadeAuth.signUp(username, password);
+        signupMessage.textContent = 'Account created!';
+        window.location.href = 'index.html';
+      } catch (error) {
+        signupMessage.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
